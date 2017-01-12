@@ -254,12 +254,14 @@ public class GrantPermissionsActivity extends OverlayTouchActivity
                             .mGroup.getName());
                     for (Permission permission : group.getPermissions()) {
                         try {
-                            PermissionInfo permissionInfo = this.getPackageManager()
-                                    .getPermissionInfo(permission.getName(), 0);
-                            if (info.length() != 0) {
-                                info += ", ";
+                            if (!permission.isGranted()) {
+                                PermissionInfo permissionInfo = this.getPackageManager()
+                                        .getPermissionInfo(permission.getName(), 0);
+                                if (info.length() != 0) {
+                                    info += ", ";
+                                }
+                                info += permissionInfo.loadLabel(getPackageManager());
                             }
-                            info += permissionInfo.loadLabel(getPackageManager());
                         } catch (PackageManager.NameNotFoundException e) {
                             e.printStackTrace();
                         }
