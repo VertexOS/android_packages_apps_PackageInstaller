@@ -118,7 +118,11 @@ public final class GrantPermissionsViewHandlerImpl
         mGroupIndex = groupIndex;
         mGroupIcon = icon;
         mGroupMessage = message;
-        mShowDonNotAsk = showDonNotAsk;
+        if (AppPermissionGroup.isStrictOpEnable()) {
+            mShowDonNotAsk = false;
+        } else {
+            mShowDonNotAsk = showDonNotAsk;
+        }
         mDoNotAskChecked = false;
         // If this is a second (or later) permission and the views exist, then animate.
         if (mIconView != null) {
@@ -314,7 +318,7 @@ public final class GrantPermissionsViewHandlerImpl
     }
 
     private void updateDoNotAskCheckBox() {
-        if (!mShowDonNotAsk) {
+        if (mShowDonNotAsk) {
             mDoNotAskCheckbox.setVisibility(View.VISIBLE);
             mDoNotAskCheckbox.setOnClickListener(this);
             mDoNotAskCheckbox.setChecked(mDoNotAskChecked);
@@ -331,7 +335,7 @@ public final class GrantPermissionsViewHandlerImpl
                 if (mResultListener != null) {
                     view.clearAccessibilityFocus();
                     mResultListener.onPermissionGrantResult(
-                            mGroupName, true, AppPermissionGroup.isStrictOpEnable()? false: mDoNotAskCheckbox.isChecked());
+                            mGroupName, true, false);
                 }
                 break;
             case R.id.permission_deny_button:
@@ -343,7 +347,7 @@ public final class GrantPermissionsViewHandlerImpl
                 }
                 break;
             case R.id.do_not_ask_checkbox:
-                //mAllowButton.setEnabled(!mDoNotAskCheckbox.isChecked());
+                mAllowButton.setEnabled(!mDoNotAskCheckbox.isChecked());
                 break;
         }
     }
